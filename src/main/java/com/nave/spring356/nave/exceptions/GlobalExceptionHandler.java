@@ -10,14 +10,9 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex, WebRequest request) {        
-        final ErrorResponse error = ErrorResponse
-                .builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .error("Not Found")
-                .message(ex.getMessage())
-                .path(request.getDescription(false))
-                .build();
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex, WebRequest request) {
+        final ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(),"Not Found",ex.getMessage(),request.getDescription(false));
+
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -25,12 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(final Exception ex) {
 
-        final ErrorResponse error = ErrorResponse
-                .builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("INTERNAL_ERROR")
-                .message(ex.getMessage())
-                .build();
+        final ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),"INTERNAL_ERROR",ex.getMessage(),"");
 
         return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
     }
